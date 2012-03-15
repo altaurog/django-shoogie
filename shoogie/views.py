@@ -6,5 +6,5 @@ from shoogie import models
 class TechnicalResponseView(detail.BaseDetailView):
     queryset = models.ServerError.objects.all()
     def render_to_response(self, context):
-        return HttpResponse(context['servererror'].technical_report)
+        return HttpResponse(context['servererror'].technical_response)
 

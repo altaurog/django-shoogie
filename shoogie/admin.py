@@ -12,7 +12,7 @@ class ServerErrorAdmin(admin.ModelAdmin):
     search_fields  = ('request_path', 'exception_type', 'exception_str', 'source_file', 'source_function', 'source_text')
     actions = ('get_email_list', 'resolve_servererror', 'unresolve_servererror')
 
-    exclude = ('technical_report',)
+    exclude = ('technical_response',)
     readonly_fields = (
             'datestamp',
             'hostname',

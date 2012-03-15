@@ -28,7 +28,7 @@ class ServerError(models.Model):
     source_text     = models.CharField(max_length=256)
 
     # django's error page
-    technical_report = models.TextField()
+    technical_response = models.TextField()
 
     # extra
     issue           = models.CharField(max_length=256, blank=True)

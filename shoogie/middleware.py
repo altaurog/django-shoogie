@@ -38,7 +38,7 @@ class DBExceptionMiddleware(object):
                 source_line_num = tb_line_num,
                 source_function = tb_function,
                 source_text     = tb_text,
-                technical_report = reporter.get_traceback_html(),
                 issue           = '',
+                technical_response = reporter.get_traceback_html(),
             )
 
