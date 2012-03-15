@@ -7,7 +7,7 @@ from django.views   import debug
 
 from shoogie        import models
 
-class DBExceptionMiddleware(object):
+class ExceptionLoggingMiddleware(object):
     def process_exception(self, request, exception):
         if settings.DEBUG:
             return
