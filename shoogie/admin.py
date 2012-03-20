@@ -7,14 +7,13 @@ from shoogie import models, views
 
 class ServerErrorAdmin(admin.ModelAdmin):
     list_display = ('exception_type', 'exception_str', 'path_link', 'error_date_format', 'user', 'technicalresponse_link', 'resolved',)
-    list_display_links = ('exception_type', 'exception_str',)
-    date_hierarchy = 'datestamp'
+    date_hierarchy = 'timestamp'
     search_fields  = ('request_path', 'exception_type', 'exception_str', 'source_file', 'source_function', 'source_text')
     actions = ('get_email_list', 'resolve_servererror', 'unresolve_servererror')
 
     exclude = ('technical_response',)
     readonly_fields = (
-            'datestamp',
+            'timestamp',
             'hostname',
             'request_method',
             'request_path',
@@ -33,8 +32,9 @@ class ServerErrorAdmin(admin.ModelAdmin):
         )
 
     def error_date_format(self, instance):
-        return instance.datestamp.strftime('%Y-%b-%d %H:%M')
-    error_date_format.admin_order_field = 'datestamp'
+        return instance.timestamp.strftime('%Y-%b-%d %H:%M')
+    error_date_format.admin_order_field = 'timestamp'
+    error_date_format.short_description = 'timestamp'
 
     def path_link(self, instance):
         url = 'http://%s%s?%s' % (instance.hostname, instance.request_path, instance.query_string)

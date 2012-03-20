@@ -6,7 +6,7 @@ Based on http://stackoverflow.com/questions/7130985/#answer-7579467
 """
 
 class ServerError(models.Model):
-    datestamp       = models.DateTimeField(auto_now_add=True)
+    timestamp       = models.DateTimeField(auto_now_add=True)
 
     # http request information
     hostname        = models.CharField(max_length=64)
@@ -35,7 +35,7 @@ class ServerError(models.Model):
     resolved        = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return '%s %s%s' % (self.datestamp.strftime('%Y-%b-%d %H:%M'),
+        return '%s %s%s' % (self.timestamp.strftime('%Y-%b-%d %H:%M'),
                                 self.hostname, self.request_path)
 
 
