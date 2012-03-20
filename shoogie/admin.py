@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from shoogie import models, views
 
 class ServerErrorAdmin(admin.ModelAdmin):
-    list_display = ('request_path', 'resolved', 'technicalresponse_link', 'error_date_format', 'user', 'exception_type', 'exception_str',)
-    list_filter = ('resolved','request_path')
+    list_display = ('exception_type', 'exception_str', 'path_link', 'error_date_format', 'user', 'technicalresponse_link', 'resolved',)
+    list_display_links = ('exception_type', 'exception_str',)
     date_hierarchy = 'datestamp'
     search_fields  = ('request_path', 'exception_type', 'exception_str', 'source_file', 'source_function', 'source_text')
     actions = ('get_email_list', 'resolve_servererror', 'unresolve_servererror')
@@ -33,8 +33,14 @@ class ServerErrorAdmin(admin.ModelAdmin):
         )
 
     def error_date_format(self, instance):
-        return instance.datestamp.strftime('%Y-%b-%m %H:%M')
+        return instance.datestamp.strftime('%Y-%b-%d %H:%M')
     error_date_format.admin_order_field = 'datestamp'
+
+    def path_link(self, instance):
+        url = 'http://%s%s?%s' % (instance.hostname, instance.request_path, instance.query_string)
+        return '<a href="{0}" title="{0}">{1}</a>'.format(url, instance.request_path)
+    path_link.allow_tags = True
+    path_link.short_description = 'path'
 
     def get_email_list(self, request, queryset):
         content = queryset.values_list('user__email', flat=True).distinct()
@@ -43,9 +49,9 @@ class ServerErrorAdmin(admin.ModelAdmin):
 
     def technicalresponse_link(self, instance):
         tr_url = reverse('admin:shoogie_technicalresponse', kwargs={'pk':instance.pk})
-        return '<a href="%s"><b>view</b></a>' % tr_url
+        return '<a href="%s"><b>debug</b></a>' % tr_url
     technicalresponse_link.allow_tags = True
-    technicalresponse_link.short_description = 'link'
+    technicalresponse_link.short_description = 'Debug'
 
     def resolve_servererror(self, request, queryset):
         update_count = queryset.update(resolved=True)
