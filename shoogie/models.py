@@ -21,7 +21,7 @@ class ServerError(models.Model):
 
     # traceback
     exception_type  = models.CharField(max_length=128)
-    exception_str   = models.CharField(max_length=256)
+    exception_str   = models.TextField()
     source_file     = models.CharField(max_length=256)
     source_line_num = models.IntegerField()
     source_function = models.CharField(max_length=128)

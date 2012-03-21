@@ -33,7 +33,7 @@ class ExceptionLoggingMiddleware(object):
                 session_data    = repr(dict(request.session.iteritems())),
                 user            = user,
                 exception_type  = exc_type.__name__[:128],
-                exception_str   = str(exc_val)[:256],
+                exception_str   = str(exc_val),
                 source_file     = tb_file[-256:],
                 source_line_num = tb_line_num,
                 source_function = tb_function[:128],
