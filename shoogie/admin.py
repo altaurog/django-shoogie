@@ -5,8 +5,28 @@ from django.http import HttpResponse
 
 from shoogie import models, views
 
+class Truncate(object):
+    max_length = 50
+    def __init__(self, attrname, max_length=None):
+        self.attrname = attrname
+        self.__name__ = attrname
+        if max_length is not None:
+            self.max_length = max_length
+
+    def __call__(self, instance):
+        attr = str(getattr(instance, self.attrname, ''))
+        if len(attr) < self.max_length:
+            return attr
+        return attr[:self.max_length] + '...'
+
 class ServerErrorAdmin(admin.ModelAdmin):
-    list_display = ('exception_type', 'exception_str', 'path_link', 'error_date_format', 'user', 'technicalresponse_link', 'resolved',)
+    list_display = (Truncate('exception_type', 40),
+                    Truncate('exception_str', 50),
+                    'path_link',
+                    'error_date_format',
+                    'user',
+                    'technicalresponse_link',
+                    'resolved',)
     date_hierarchy = 'timestamp'
     search_fields  = ('request_path', 'exception_type', 'exception_str', 'source_file', 'source_function', 'source_text')
     actions = ('get_email_list', 'resolve_servererror', 'unresolve_servererror')
@@ -36,9 +56,12 @@ class ServerErrorAdmin(admin.ModelAdmin):
     error_date_format.admin_order_field = 'timestamp'
     error_date_format.short_description = 'timestamp'
 
+    get_request_path = Truncate('request_path', 40)
     def path_link(self, instance):
         url = 'http://%s%s?%s' % (instance.hostname, instance.request_path, instance.query_string)
-        return '<a href="{0}" title="{0}">{1}</a>'.format(url, instance.request_path)
+        request_path = self.get_request_path(instance)
+        return '<a href="{0}" title="{0}">{1}</a>'.format(url, request_path)
+    path_link.admin_order_field = 'request_path'
     path_link.allow_tags = True
     path_link.short_description = 'path'
 
