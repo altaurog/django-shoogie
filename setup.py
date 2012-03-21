@@ -1,7 +1,7 @@
 from setuptools import setup
 setup(
     name = "django-shoogie",
-    version = "0.2.1",
+    version = "0.3.0",
     description = "Log server errors to database",
     author = "Aryeh Leib Taurog",
     author_email = "python@aryehleib.com",
