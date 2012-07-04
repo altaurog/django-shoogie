@@ -27,7 +27,7 @@ class ExceptionLoggingMiddleware(object):
                 request_method  = request.method[:10],
                 request_path    = request.path[:1024],
                 query_string    = request.META.get('QUERY_STRING',''),
-                post_data       = request.raw_post_data,
+                post_data       = repr(dict(request.POST)),
                 cookie_data     = repr(request.COOKIES),
                 session_id      = request.session.session_key[:64],
                 session_data    = repr(dict(request.session.iteritems())),
