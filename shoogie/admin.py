@@ -66,8 +66,13 @@ class ServerErrorAdmin(admin.ModelAdmin):
     path_link.short_description = 'path'
 
     def get_email_list(self, request, queryset):
-        content = queryset.values_list('user__email', flat=True).distinct()
-        return HttpResponse(',\n'.join(content), mimetype='text/plain')
+        emails = set()
+        for se in queryset.select_related('user'):
+            user = se.user
+            if user and user.email:
+                name = user.get_full_name() or user.username
+                emails.add('"%s" <%s>' % (name, user.email))
+        return HttpResponse(',\n'.join(emails), mimetype='text/plain')
     get_email_list.short_description = 'Get user email addresses for selected errors'
 
     def technicalresponse_link(self, instance):
