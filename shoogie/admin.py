@@ -5,6 +5,9 @@ from django.http import HttpResponse
 
 from shoogie import models, views
 
+def get_name(user):
+    return user.get_full_name() or user.username
+
 class Truncate(object):
     max_length = 50
     def __init__(self, attrname, max_length=None):
@@ -24,7 +27,7 @@ class ServerErrorAdmin(admin.ModelAdmin):
                     Truncate('exception_str', 50),
                     'path_link',
                     'error_date_format',
-                    'user',
+                    'user_link',
                     'technicalresponse_link',
                     'resolved',)
     date_hierarchy = 'timestamp'
@@ -65,12 +68,23 @@ class ServerErrorAdmin(admin.ModelAdmin):
     path_link.allow_tags = True
     path_link.short_description = 'path'
 
+    def user_link(self, instance):
+        if not instance.user:
+            return u'(None)'
+        user = instance.user
+        url = reverse('admin:auth_user_change', args=(user.id,))
+        templ = u'<a href="{url}" title="{name}">{username}</a>'
+        return templ.format(url=url, username=user.username, name=get_name(user))
+    user_link.admin_order_field = 'user'
+    user_link.allow_tags = True
+    user_link.short_description = 'user'
+
     def get_email_list(self, request, queryset):
         emails = set()
         for se in queryset.select_related('user'):
             user = se.user
             if user and user.email:
-                name = user.get_full_name() or user.username
+                name = get_name(user)
                 emails.add('"%s" <%s>' % (name, user.email))
         return HttpResponse(',\n'.join(emails), mimetype='text/plain')
     get_email_list.short_description = 'Get user email addresses for selected errors'
