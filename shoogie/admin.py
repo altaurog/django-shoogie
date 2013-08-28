@@ -14,10 +14,10 @@ class Truncate(object):
             self.max_length = max_length
 
     def __call__(self, instance):
-        attr = str(getattr(instance, self.attrname, ''))
-        if len(attr) < self.max_length:
-            return attr
-        return attr[:self.max_length] + '...'
+        attr = unicode(getattr(instance, self.attrname, ''))
+        if len(attr) >= self.max_length:
+            attr = attr[:self.max_length] + '...'
+        return attr.encode('utf-8')
 
 class ServerErrorAdmin(admin.ModelAdmin):
     list_display = (Truncate('exception_type', 40),
