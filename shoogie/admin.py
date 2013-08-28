@@ -17,7 +17,7 @@ class Truncate(object):
         attr = unicode(getattr(instance, self.attrname, ''))
         if len(attr) >= self.max_length:
             attr = attr[:self.max_length] + '...'
-        return attr.encode('utf-8')
+        return attr
 
 class ServerErrorAdmin(admin.ModelAdmin):
     list_display = (Truncate('exception_type', 40),
@@ -58,9 +58,9 @@ class ServerErrorAdmin(admin.ModelAdmin):
 
     get_request_path = Truncate('request_path', 40)
     def path_link(self, instance):
-        url = 'http://%s%s?%s' % (instance.hostname, instance.request_path, instance.query_string)
+        url = u'http://%s%s?%s' % (instance.hostname, instance.request_path, instance.query_string)
         request_path = self.get_request_path(instance)
-        return '<a href="{0}" title="{0}">{1}</a>'.format(url, request_path)
+        return u'<a href="{0}" title="{0}">{1}</a>'.format(url, request_path)
     path_link.admin_order_field = 'request_path'
     path_link.allow_tags = True
     path_link.short_description = 'path'
