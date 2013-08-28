@@ -24,7 +24,7 @@ class Truncate(object):
 
 class ServerErrorAdmin(admin.ModelAdmin):
     list_display = (Truncate('exception_type', 40),
-                    Truncate('exception_str', 50),
+                    Truncate('exception_str', 80),
                     'path_link',
                     'error_date_format',
                     'user_link',
