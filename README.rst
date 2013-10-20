@@ -1,17 +1,86 @@
 django-shoogie
 =================
 
-Shoogie is intended to be a lightweight alternative to `django-sentry`_,
-inspired by `this answer on stackoverflow`_
+Shoogie is a small django application with middleware that logs exceptions
+to a table in the database, along with django's standard HTML debug
+response.  It is intended to be a lightweight alternative to
+`django-sentry`_, inspired by `this answer on stackoverflow`_.  
+
+Shoogie doesn't do anything when running in ``DEBUG`` mode.
+
+Shoogie is stable and has been used in production since March 2012.
+
+The name Shoogie is a diminutive of the Hebrew word *sh'giah* (שגיאה), which means
+'error.'  It also happens to be the name of a popular kids' candy snack in
+Israel.  It's our hope that django-shoogie will make dealing with server errors a
+sweeter experience.
 
 .. _django-sentry: http://pypi.python.org/pypi/django-sentry
 .. _this answer on stackoverflow: http://stackoverflow.com/questions/7130985/#answer-7579467
 
 Key Features
 --------------
-* Simple, server-error specific
+* Simple, server-error specific logging
 * Stores and displays familiar django technical 500 response
+* Uses django's standard admin interface
 * Easy retrieval by user, exception, file, function
 * Easy extraction of users' email addresses
-* Middleware for easy placement outside transaction management
+* Middleware can easily be placed outside transaction management
+
+Installation 
+------------
+
+To install shoogie::
+
+    pip install django-shoogie
+
+To use shoogie in a django project, add it to the ``INSTALLED_APPS`` and
+add the shoogie middleware to ``MIDDLEWARE_CLASSES`` in your ``settings.py``.
+Be sure to put the middleware *above* the transaction middleware, 
+or errors which cause the DB transaction to be rolled back will not be
+logged.  The ``django.contrib.admin`` app must also be installed to view
+the errors logged via django's admin interface::
+
+    MIDDLEWARE_CLASSES = (
+            'django.middleware.common.CommonMiddleware',
+            'shoogie.middleware.ExceptionLoggingMiddleware',        # <---
+            'django.contrib.sessions.middleware.SessionMiddleware',
+            'django.middleware.transaction.TransactionMiddleware',
+            'django.middleware.csrf.CsrfViewMiddleware',
+            'django.middleware.locale.LocaleMiddleware',
+            'django.contrib.auth.middleware.AuthenticationMiddleware',
+            # ...
+        )
+
+    INSTALLED_APPS = (
+        'django.contrib.auth',
+        'django.contrib.sessions',
+        'django.contrib.admin',
+        'django.contrib.admindocs',
+        'shoogie',                      # <---
+        # ...
+    )
+
+Make sure to run ``syncdb`` after adding shoogie to create the
+``shoogie_servererror`` table.
+
+Configuration
+---------------
+
+Shoogie reads one configuration variable:
+``settings.SHOOGIE_IGNORE_EXCEPTIONS``, a sequence of absolute
+dotted paths of exceptions which it should not log.  These exceptions and
+their subclasses will be ignored.  The default value is::
+
+    SHOOGIE_IGNORE_EXCEPTIONS = (
+        'django.http.Http404',
+        'django.exceptions.PermissionDenied',
+    )
+
+Use
+----
+
+Errors logged by shoogie can be viewed via django's admin interface at
+``/admin/shoogie/servererror/``.
+
 
