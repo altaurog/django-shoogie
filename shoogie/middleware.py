@@ -13,6 +13,8 @@ DEFAULT_IGNORES = (http.Http404, exceptions.PermissionDenied)
 
 class ExceptionLoggingMiddleware(object):
     def __init__(self):
+        if settings.DEBUG:
+            raise exceptions.MiddlewareNotUsed
         ignores = getattr(settings, 'SHOOGIE_IGNORE_EXCEPTIONS', None)
         if ignores:
             self.ignores = []
@@ -29,8 +31,6 @@ class ExceptionLoggingMiddleware(object):
             self.ignores = DEFAULT_IGNORES
 
     def process_exception(self, request, exception):
-        if settings.DEBUG:
-            return
         exc_type, exc_val, tb = sys.exc_info()
         if issubclass(exc_type, self.ignores):
             return
