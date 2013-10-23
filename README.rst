@@ -6,9 +6,9 @@ to a table in the database, along with django's standard HTML debug
 response.  It is intended to be a lightweight alternative to
 `django-sentry`_, inspired by `this answer on stackoverflow`_.  
 
-Shoogie doesn't do anything when running in ``DEBUG`` mode.
+The logging middleware doesn't do anything when running in ``DEBUG`` mode.
 
-Shoogie is stable and has been used in production since March 2012.
+Shoogie has been used in production since March 2012.
 
 The name Shoogie is a diminutive of the Hebrew word *sh'giah* (שגיאה), which means
 'error.'  It also happens to be the name of a popular kids' candy snack in
@@ -84,3 +84,20 @@ Errors logged by shoogie can be viewed via django's admin interface at
 ``/admin/shoogie/servererror/``.
 
 
+Shoogie can also be used to log exceptions directly.  This could be useful
+for exceptions occurring in back-end processes such as long-running
+calculations, cron-jobs, and celery workers::
+
+    from shoogie import logger
+    logger.log_exception([request, [exc_type, exc_val, tb]])
+
+Logs an exception to the db.  If ``exc_type``, ``exc_val``, and ``tb``
+aren't supplied, they will be retrieved using ``sys.exc_info()``.
+
+If ``request`` is given, whatever request information is present will also
+be saved in the log entry.  ``request`` should be an object which implements,
+partially or wholly, the same interface as a ``django.http.HttpRequest``.
+
+As a convenience for logging exceptions outside the context of an HTTP
+request, ``log_exception`` can be passed a string instead, which will be
+logged as the request path:  ``log_exception("pdf generator task")``.
