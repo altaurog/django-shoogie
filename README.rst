@@ -83,6 +83,29 @@ Use
 Errors logged by shoogie can be viewed via django's admin interface at
 ``/admin/shoogie/servererror/``.
 
+To view the data fields stored in the log entry, click in the first column.
+
+To visit the url in which the error occurred, click the 'path' column.
+This won't work if the host is inaccessible, if the request method was
+something other than GET, or if the path isn't really an HTTP request path
+(see below).
+
+If a user is logged with an entry, a link to the admin detail page for the
+user will be displayed in the admin list.
+
+Click the 'debug' link to view the django-generated 'technical response'
+(debug page) for the exception.
+
+To get a list of users and email addresses who encountered a set of errors,
+select the log entries using the checkboxes on the left, then select "Get
+user email addresses for selected errors" from the 'Action' drop-down menu
+and click the 'Go' button.
+
+To mark a set of errors as resolved or as not resolved, select the entries
+in question and pick the appropriate action from the drop-down as above.
+
+API
+---
 
 Shoogie can also be used to log exceptions directly.  This could be useful
 for exceptions occurring in back-end processes such as long-running
@@ -93,6 +116,8 @@ calculations, cron-jobs, and celery workers::
 
 Logs an exception to the db.  If ``exc_type``, ``exc_val``, and ``tb``
 aren't supplied, they will be retrieved using ``sys.exc_info()``.
+The django technical debug page stored will display the traceback as with
+errors occuring in normal views.
 
 If ``request`` is given, whatever request information is present will also
 be saved in the log entry.  ``request`` should be an object which implements,
