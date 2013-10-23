@@ -18,8 +18,8 @@ def log_exception(request, exc_type=None, exc_val=None, tb=None):
 
     reporter = debug.ExceptionReporter(django_request, exc_type, exc_val, tb)
 
-    tb_desc = traceback.extract_tb(tb, 1)
-    tb_file, tb_line_num, tb_function, tb_text = tb_desc[0]
+    tb_desc = traceback.extract_tb(tb)
+    tb_file, tb_line_num, tb_function, tb_text = tb_desc[-1]
 
     data = {}
     if request is not None:
