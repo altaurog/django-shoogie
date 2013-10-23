@@ -1,20 +1,34 @@
 from os.path import join, dirname
 from setuptools import setup
 
+package_name = "shoogie"
+base_dir = dirname(__file__)
+
 def read(filename):
-    f = open(join(dirname(__file__), filename))
+    f = open(join(base_dir, filename))
     return f.read()
 
+def get_version(package_name, default='0.1'):
+    try:
+        f = open(join(base_dir, package_name, '__init__.py'))
+    except IOError:
+        try:
+            f = open(join(base_dir, package_name + '.py'))
+        except IOError:
+            return default
+    scope = {}
+    exec f in scope
+    return scope.get('__version__', default)
 
 setup(
     name = "django-shoogie",
-    version = "0.4",
+    version = get_version(),
     description = "Log server errors to database",
     long_description = read("README.rst"),
     author = "Aryeh Leib Taurog",
     author_email = "python@aryehleib.com",
     url = "http://bitbucket.org/altaurog/django-shoogie",
-    packages = ["shoogie"],
+    packages = [package_name],
     install_requires = ["django>=1.3"],
     classifiers = [
         "Programming Language :: Python",
