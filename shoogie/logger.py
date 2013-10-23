@@ -8,7 +8,7 @@ from django.views   import debug
 from . import models, utils
 
 
-def log_exception(request, exc_type=None, exc_val=None, tb=None):
+def log_exception(request=None, exc_type=None, exc_val=None, tb=None):
     django_request = None
     if isinstance(request, http.HttpRequest):
         django_request = request
