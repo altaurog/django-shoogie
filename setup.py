@@ -22,7 +22,7 @@ def get_version(package_name, default='0.1'):
 
 setup(
     name = "django-shoogie",
-    version = get_version(),
+    version = get_version(package_name),
     description = "Log server errors to database",
     long_description = read("README.rst"),
     author = "Aryeh Leib Taurog",
