@@ -59,8 +59,13 @@ class ServerErrorAdmin(admin.ModelAdmin):
 
     get_request_path = Truncate('request_path', 40)
     def path_link(self, instance):
-        url = u'http://%s%s?%s' % (instance.hostname, instance.request_path, instance.query_string)
         request_path = self.get_request_path(instance)
+        if 'GET' != instance.request_method:
+            if instance.request_method:
+                return u'%s (%s)' % (request_path, instance.request_method)
+            else:
+                return request_path
+        url = u'http://%s%s?%s' % (instance.hostname, instance.request_path, instance.query_string)
         return u'<a href="{0}" title="{0}">{1}</a>'.format(url, request_path)
     path_link.admin_order_field = 'request_path'
     path_link.allow_tags = True

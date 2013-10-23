@@ -6,6 +6,7 @@
 * More extensive documentation
 * Requirement for request, session, and user objects lifted
 * Direct logging API
+* Link to url only for GET requests
 
 0.4.1
 -----
