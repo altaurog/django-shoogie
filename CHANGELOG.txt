@@ -1,0 +1,66 @@
+0.5a
+----
+:date: 23 Oct, 2013
+
+* SHOOGIE_IGNORE_EXCEPTIONS setting
+* More extensive documentation
+* Requirement for request, session, and user objects lifted
+* Direct logging API
+
+0.4.1
+-----
+:date: 28 Aug, 2013
+
+* Increased length of exception string displayed in admin list
+
+0.4
+----
+:date: 28 Aug, 2013
+
+* E-mail list: remove duplicates, format as Full Name <email-address@example.com>
+* Display link in admin list to user admin page
+
+0.3.2
+-----
+:date: 28 Aug, 2013
+
+* Handle unicode data in admin
+
+0.3.1
+-----
+:date: 4 Jul, 2012
+
+* Store repr(dict(request.POST)) instead of request.raw_post_data
+
+0.3
+----
+:date: 21 Mar, 2012
+
+* Truncate fields in admin display
+* Store exception string as ``text`` instead of ``varchar``
+
+0.2.1
+-----
+:date: 20 Mar, 2012
+
+* Trim data to db column length
+
+0.2
+----
+:date: 20 Mar, 2012
+
+* Rearranged admin list page
+
+
+0.1.1
+------
+:date: 15 Mar, 2012
+
+* Renamed middleware class
+
+
+0.1
+----
+:date: 15 Mar, 2012
+
+* Initial release on Bitbucket
