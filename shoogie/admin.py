@@ -3,7 +3,7 @@ from django.conf.urls.defaults import patterns, url
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 
-from shoogie import models, views
+from . import models, utils, views
 
 def get_name(user):
     return user.get_full_name() or user.username
@@ -17,10 +17,8 @@ class Truncate(object):
             self.max_length = max_length
 
     def __call__(self, instance):
-        attr = unicode(getattr(instance, self.attrname, ''))
-        if len(attr) >= self.max_length:
-            attr = attr[:self.max_length] + '...'
-        return attr
+        val = getattr(instance, self.attrname, '')
+        return utils.truncate(val, self.max_length)
 
 class ServerErrorAdmin(admin.ModelAdmin):
     list_display = (Truncate('exception_type', 40),
