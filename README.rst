@@ -125,4 +125,13 @@ partially or wholly, the same interface as a ``django.http.HttpRequest``.
 
 As a convenience for logging exceptions outside the context of an HTTP
 request, ``log_exception`` can be passed a string instead, which will be
-logged as the request path:  ``log_exception("pdf generator task")``.
+logged as the request path.  Make sure the logging is done outside any
+transaction which might be reversed by the exception being logged.  A
+general pattern as follows is recommended::
+
+    try:
+        with transaction.commit_on_success():
+            "insert your processing here"
+    except:
+        logger.log_exception('Description')
+
