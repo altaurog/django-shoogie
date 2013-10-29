@@ -21,11 +21,13 @@ sweeter experience.
 Key Features
 --------------
 * Simple, server-error specific logging
-* Stores and displays familiar django technical 500 response
+* Logs django's familiar technical 500 response
 * Uses django's standard admin interface
 * Easy retrieval by user, exception, file, function
 * Easy extraction of users' email addresses
 * Middleware can easily be placed outside transaction management
+* Configurable exception ignores
+* Configurable traceback filtering
 
 Installation 
 ------------
@@ -67,14 +69,29 @@ Make sure to run ``syncdb`` after adding shoogie to create the
 Configuration
 ---------------
 
-Shoogie reads one configuration variable:
-``settings.SHOOGIE_IGNORE_EXCEPTIONS``, a sequence of absolute
-dotted paths of exceptions which it should not log.  These exceptions and
-their subclasses will be ignored.  The default value is::
+Shoogie can be configured with the following settings:
+
+settings.SHOOGIE_IGNORE_EXCEPTIONS
+'''''''''''''''''''''''''''''''''''
+A sequence of absolute dotted paths of exceptions which it should not log.
+These exceptions and their subclasses will be ignored.
+The default value is::
 
     SHOOGIE_IGNORE_EXCEPTIONS = (
         'django.http.Http404',
         'django.exceptions.PermissionDenied',
+    )
+
+settings.SHOOGIE_TRACEBACK_EXCLUDE
+''''''''''''''''''''''''''''''''''''
+A sequence of regular expression pairs (filename, funcname) used to filter
+the traceback included in django's debug page.  This is intended to
+eliminate the time needed to render, store, and display traceback frames
+which aren't useful.  The default value is::
+
+    SHOOGIE_TRACEBACK_EXCLUDE = (
+        ('/django/core/handlers/base.py$', '^get_response$'),
+        ('/django/template/', 'render'),
     )
 
 Use

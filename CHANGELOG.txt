@@ -1,3 +1,9 @@
+0.6a
+----
+:date: 29 Oct, 2013
+
+* SHOOGIE_TRACEBACK_EXCLUDE setting
+
 0.5a
 ----
 :date: 23 Oct, 2013
