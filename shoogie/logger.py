@@ -21,7 +21,7 @@ def log_exception(request=None, exc_type=None, exc_val=None, tb=None):
     reporter = debug.ExceptionReporter(django_request,
                                         exc_type,
                                         exc_val,
-                                        Traceback(tb))
+                                        Traceback(tb) or None)
 
     tb_desc = traceback.extract_tb(tb)
     tb_file, tb_line_num, tb_function, tb_text = tb_desc[-1]
@@ -119,22 +119,23 @@ def compile_exclude(exclude_desc):
 class Traceback(object):
     "Wrap a traceback object so we can filter it"
     exclude = None
-    def __init__(self, tb, init=True):
+    def __init__(self, tb):
         if self.exclude is None:
             self.load_config()
-        top = tb
-        if init:
-            tb = self.get_next(tb) or top
+        if tb:
+            tb = self.get_next(tb)
         self.tb = tb
-        self.tb_frame = tb.tb_frame
-        self.tb_lineno = tb.tb_lineno
-        self.tb_lasti = tb.tb_lasti
+        if tb:
+            self.tb_frame = tb.tb_frame
+            self.tb_lineno = tb.tb_lineno
+            self.tb_lasti = tb.tb_lasti
 
     @property
     def tb_next(self):
-        tb = self.get_next(self.tb.tb_next)
-        if tb:
-            return self.__class__(tb, init=False)
+        return self.__class__(self.tb.tb_next) or None
+
+    def __nonzero__(self):
+        return bool(self.tb)
 
     def get_next(self, tb):
         while tb and self.skip(tb):
