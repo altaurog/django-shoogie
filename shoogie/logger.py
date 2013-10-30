@@ -116,25 +116,30 @@ DEFAULT_EXCLUDE = (
 def compile_exclude(exclude_desc):
     return map(re.compile, exclude_desc)
 
-class NextTracebackDescriptor(object):
-    """
-    A descriptor class which walks the traceback chain,
-    filtering by preset excludes, and returns the next
-    traceback object, wrapped in the owner class.
-    """
+class Traceback(object):
+    "Wrap a traceback object so we can filter it"
     exclude = None
-    def __init__(self):
-        "Load exclude configuration into class if necessary"
-        if NextTracebackDescriptor.exclude is None:
-            exclude_conf = getattr(settings,
-                                    'SHOOGIE_TRACEBACK_EXCLUDE',
-                                    DEFAULT_EXCLUDE)
-            NextTracebackDescriptor.exclude = map(compile_exclude, exclude_conf)
+    def __init__(self, tb, init=True):
+        if self.exclude is None:
+            self.load_config()
+        top = tb
+        if init:
+            tb = self.get_next(tb) or top
+        self.tb = tb
+        self.tb_frame = tb.tb_frame
+        self.tb_lineno = tb.tb_lineno
+        self.tb_lasti = tb.tb_lasti
 
-    def __get__(self, instance, cls):
-        tb = self.get_next(instance.tb.tb_next)
+    @property
+    def tb_next(self):
+        tb = self.get_next(self.tb.tb_next)
         if tb:
-            return cls(tb, test=False)
+            return self.__class__(tb, init=False)
+
+    def get_next(self, tb):
+        while tb and self.skip(tb):
+            tb = tb.tb_next
+        return tb
 
     def skip(self, tb):
         "Determine if this tb should be skipped or not"
@@ -145,21 +150,9 @@ class NextTracebackDescriptor(object):
             if file_re.search(filename) and  func_re.search(funcname):
                 return True
 
-    def get_next(self, tb):
-        while tb and self.skip(tb):
-            tb = tb.tb_next
-        return tb
-
-class Traceback(object):
-    "Wrap a traceback object so we can filter it"
-    def __init__(self, tb, test=True):
-        top = tb
-        if test:
-            next_tb = NextTracebackDescriptor()
-            tb = next_tb.get_next(tb) or top
-        self.tb = tb
-        self.tb_frame = tb.tb_frame
-        self.tb_lineno = tb.tb_lineno
-        self.tb_lasti = tb.tb_lasti
-
-    tb_next = NextTracebackDescriptor()
+    def load_config(self):
+        "Load exclude configuration into class if necessary"
+        exclude_conf = getattr(settings,
+                                'SHOOGIE_TRACEBACK_EXCLUDE',
+                                DEFAULT_EXCLUDE)
+        Traceback.exclude = map(compile_exclude, exclude_conf)
