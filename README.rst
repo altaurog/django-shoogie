@@ -15,7 +15,6 @@ The name Shoogie is a diminutive of the Hebrew word *sh'giah* (שגיאה), whic
 Israel.  It's our hope that django-shoogie will make dealing with server errors a
 sweeter experience.
 
-.. _django-sentry: http://pypi.python.org/pypi/django-sentry
 .. _this answer on stackoverflow: http://stackoverflow.com/questions/7130985/#answer-7579467
 
 Key Features
@@ -152,3 +151,27 @@ general pattern as follows is recommended::
     except:
         logger.log_exception('Description')
 
+Related Projects
+-----------------
+
+`django-sentry`_ is a large, very full-featured multi-platform error logging server,
+which is based on django, and which offers prepackaged integration with
+many other platforms.  It offers some advanced features including aggregation of similar
+exceptions, graphs, a fully web-2.0 real-time AJAX interface, and much more.
+
+raven_ is the python logging client for django-sentry.
+
+`django-erroneous`_ is a very simple logging system, similar in scope to
+django-shoogie.  It uses django signals rather than middleware to capture
+exceptions.
+
+`django-logdb`_ provides a handler for python's logging_ module which
+stores log messages in the db.  It includes middleware for exception logging. 
+It also provides aggregation and some of the features offered by django-setry.
+
+
+.. _django-sentry: http://pypi.python.org/pypi/django-sentry
+.. _raven: http://pypi.python.org/pypi/raven
+.. _django-erroneous: http://pypi.python.org/pypi/django-erroneous
+.. _django-logdb: http://pypi.python.org/pypi/django-logdb
+.. _logging: http://docs.python.org/2/library/logging.html
