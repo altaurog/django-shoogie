@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin.views.main import ChangeList
 from django.conf.urls.defaults import patterns, url
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -19,6 +20,18 @@ class Truncate(object):
     def __call__(self, instance):
         val = getattr(instance, self.attrname, '')
         return utils.truncate(val, self.max_length)
+
+class FasterChangeList(ChangeList):
+    "Defers large fields we don't use"
+    defer_fields = (
+                'post_data',
+                'cookie_data',
+                'session_data',
+                'technical_response',
+            )
+    def get_query_set(self):
+        qset = super(FasterChangeList, self).get_query_set()
+        return qset.defer(*self.defer_fields)
 
 class ServerErrorAdmin(admin.ModelAdmin):
     list_display = (Truncate('exception_type', 40),
@@ -54,6 +67,9 @@ class ServerErrorAdmin(admin.ModelAdmin):
     def queryset(self, request):
         qset = super(ServerErrorAdmin, self).queryset(request)
         return qset.select_related('user')
+
+    def get_changelist(self, request, **kwargs):
+        return FasterChangeList
 
     def error_date_format(self, instance):
         return instance.timestamp.strftime('%Y-%b-%d %H:%M')
