@@ -1,3 +1,10 @@
+0.6b
+----
+:date: 17 Nov, 2013
+
+* Faster list display using queryset.select_related() and defer()
+* First version released on pypi
+
 0.6a
 ----
 :date: 29 Oct, 2013
