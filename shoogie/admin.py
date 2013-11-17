@@ -51,6 +51,9 @@ class ServerErrorAdmin(admin.ModelAdmin):
             'source_function',
             'source_text',
         )
+    def queryset(self, request):
+        qset = super(ServerErrorAdmin, self).queryset(request)
+        return qset.select_related('user')
 
     def error_date_format(self, instance):
         return instance.timestamp.strftime('%Y-%b-%d %H:%M')
