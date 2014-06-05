@@ -28,6 +28,11 @@ Key Features
 * Configurable exception ignores
 * Configurable traceback filtering
 
+Version Compatibility
+---------------------
+
+django-shoogie is compatible with Django versions 1.3 to 1.6
+
 Installation 
 ------------
 
