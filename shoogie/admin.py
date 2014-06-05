@@ -34,8 +34,8 @@ class FasterChangeList(ChangeList):
             )
     # Backward compatibility for Django < 1.6 where get_query_set() was renamed to get_queryset()
     def get_query_set(self, *args, **kwargs):
-        return self.get_queryset(self, *args, **kwargs)
-    
+        return self.get_queryset(*args, **kwargs)
+
     def get_queryset(self, *args, **kwargs):
         changelist = super(FasterChangeList, self)
         if hasattr(changelist, 'get_queryset'):
@@ -79,8 +79,8 @@ class ServerErrorAdmin(admin.ModelAdmin):
         )
     # Backward compatibility for Django < 1.6 where queryset() was renamed to get_queryset()
     def queryset(self, request):
-        return self.get_queryset(self, request)
-    
+        return self.get_queryset(request)
+
     def get_queryset(self, request):
         model_admin = super(ServerErrorAdmin, self)
         if hasattr(model_admin, 'get_queryset'):
