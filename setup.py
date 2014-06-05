@@ -27,6 +27,7 @@ setup(
     long_description = read("README.rst"),
     author = "Aryeh Leib Taurog",
     author_email = "python@aryehleib.com",
+    license = 'MIT',
     url = "http://bitbucket.org/altaurog/django-shoogie",
     packages = [package_name],
     install_requires = ["django>=1.3"],
