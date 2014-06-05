@@ -167,7 +167,7 @@ exceptions.
 
 `django-logdb`_ provides a handler for python's logging_ module which
 stores log messages in the db.  It includes middleware for exception logging. 
-It also provides aggregation and some of the features offered by django-setry.
+It also provides aggregation and some of the features offered by django-sentry.
 
 
 .. _django-sentry: http://pypi.python.org/pypi/django-sentry
