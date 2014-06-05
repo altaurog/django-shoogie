@@ -11,7 +11,7 @@ The logging middleware doesn't do anything when running in ``DEBUG`` mode.
 Shoogie has been used in production since March 2012.
 
 The name Shoogie is a diminutive of the Hebrew word *sh'giah* (שגיאה), which means
-'error.'  It also happens to be the name of a popular kids' candy snack in
+'error.'  *Shoogie* (שוגי) also happens to be the name of a popular kids' candy snack in
 Israel.  It's our hope that django-shoogie will make dealing with server errors a
 sweeter experience.
 
