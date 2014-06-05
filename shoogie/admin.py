@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
-from django.conf.urls.defaults import patterns, url
+try:
+    from django.conf.urls import patterns, url
+except ImportError:
+    from django.conf.urls.defaults import patterns, url
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 
@@ -29,8 +32,8 @@ class FasterChangeList(ChangeList):
                 'session_data',
                 'technical_response',
             )
-    def get_query_set(self):
-        qset = super(FasterChangeList, self).get_query_set()
+    def get_query_set(self, *args, **kwargs):
+        qset = super(FasterChangeList, self).get_query_set(*args, **kwargs)
         return qset.defer(*self.defer_fields)
 
 class ServerErrorAdmin(admin.ModelAdmin):
