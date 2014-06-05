@@ -32,19 +32,16 @@ class FasterChangeList(ChangeList):
                 'session_data',
                 'technical_response',
             )
-    # Backward compatibility for Django < 1.6 where get_query_set() was renamed to get_queryset()
-    def get_query_set(self, *args, **kwargs):
-        return self.get_queryset(*args, **kwargs)
-
+    # get_query_set() was renamed to get_queryset() in Django 1.6
     def get_queryset(self, *args, **kwargs):
         changelist = super(FasterChangeList, self)
         if hasattr(changelist, 'get_queryset'):
-            # Django 1.6+
             qset = changelist.get_queryset(*args, **kwargs)
         else:
-            # Django < 1.6
             qset = changelist.get_query_set(*args, **kwargs)
         return qset.defer(*self.defer_fields)
+
+    get_query_set = get_queryset
 
 class ServerErrorAdmin(admin.ModelAdmin):
     list_display = (Truncate('exception_type', 40),
@@ -77,19 +74,16 @@ class ServerErrorAdmin(admin.ModelAdmin):
             'source_function',
             'source_text',
         )
-    # Backward compatibility for Django < 1.6 where queryset() was renamed to get_queryset()
-    def queryset(self, request):
-        return self.get_queryset(request)
-
+    # queryset() was renamed to get_queryset() in Django 1.6
     def get_queryset(self, request):
         model_admin = super(ServerErrorAdmin, self)
         if hasattr(model_admin, 'get_queryset'):
-            # Django 1.6+
             qset = model_admin.get_queryset(request)
         else:
-            # Django < 1.6
             qset = model_admin.queryset(request)
         return qset.select_related('user')
+
+    queryset = get_queryset
 
     def get_changelist(self, request, **kwargs):
         return FasterChangeList
