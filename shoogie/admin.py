@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
-from django.conf.urls.defaults import patterns, url
+try:
+    from django.conf.urls import patterns, url
+except ImportError:
+    from django.conf.urls.defaults import patterns, url
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 
@@ -29,8 +32,18 @@ class FasterChangeList(ChangeList):
                 'session_data',
                 'technical_response',
             )
-    def get_query_set(self):
-        qset = super(FasterChangeList, self).get_query_set()
+    # Backward compatibility for Django < 1.6 where get_query_set() was renamed to get_queryset()
+    def get_query_set(self, *args, **kwargs):
+        return self.get_queryset(self, *args, **kwargs)
+    
+    def get_queryset(self, *args, **kwargs):
+        changelist = super(FasterChangeList, self)
+        if hasattr(changelist, 'get_queryset'):
+            # Django 1.6+
+            qset = changelist.get_queryset(*args, **kwargs)
+        else:
+            # Django < 1.6
+            qset = changelist.get_query_set(*args, **kwargs)
         return qset.defer(*self.defer_fields)
 
 class ServerErrorAdmin(admin.ModelAdmin):
@@ -64,8 +77,18 @@ class ServerErrorAdmin(admin.ModelAdmin):
             'source_function',
             'source_text',
         )
+    # Backward compatibility for Django < 1.6 where queryset() was renamed to get_queryset()
     def queryset(self, request):
-        qset = super(ServerErrorAdmin, self).queryset(request)
+        return self.get_queryset(self, request)
+    
+    def get_queryset(self, request):
+        model_admin = super(ServerErrorAdmin, self)
+        if hasattr(model_admin, 'get_queryset'):
+            # Django 1.6+
+            qset = model_admin.get_queryset(request)
+        else:
+            # Django < 1.6
+            qset = model_admin.queryset(request)
         return qset.select_related('user')
 
     def get_changelist(self, request, **kwargs):
