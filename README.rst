@@ -6,8 +6,6 @@ to a table in the database, along with django's standard HTML debug
 response.  It is intended to be a lightweight alternative to
 `django-sentry`_, inspired by `this answer on stackoverflow`_.  
 
-The logging middleware doesn't do anything when running in ``DEBUG`` mode.
-
 Shoogie has been used in production since March 2012.
 
 The name Shoogie is a diminutive of the Hebrew word *sh'giah* (שגיאה), which means
@@ -33,6 +31,16 @@ Version Compatibility
 
 django-shoogie is compatible with Django versions 1.3 to 1.6
 
+Upgrading From Previous Versions
+--------------------------------
+
+Shoogie now uses a logging handler instead of middleware, which allows catching
+errors more robustly. If you are upgrading from a previous version, middleware
+will still work, but it is recommended to switch to the logging handler
+configuration. To do so, remove the Shoogie middleware from ``MIDDLEWARE_CLASSES``
+in settings.py and then follow the installation instructions below.  Do not
+configure both the middleware and the logging handler at the same time.
+
 Installation 
 ------------
 
@@ -41,22 +49,9 @@ To install shoogie::
     pip install django-shoogie
 
 To use shoogie in a django project, add it to the ``INSTALLED_APPS`` and
-add the shoogie middleware to ``MIDDLEWARE_CLASSES`` in your ``settings.py``.
-Be sure to put the middleware *above* the transaction middleware, 
-or errors which cause the DB transaction to be rolled back will not be
-logged.  The ``django.contrib.admin`` app must also be installed to view
+add the shoogie logging handler to ``LOGGING`` in your ``settings.py``.
+The ``django.contrib.admin`` app must also be installed to view
 the errors logged via django's admin interface::
-
-    MIDDLEWARE_CLASSES = (
-            'django.middleware.common.CommonMiddleware',
-            'shoogie.middleware.ExceptionLoggingMiddleware',        # <---
-            'django.contrib.sessions.middleware.SessionMiddleware',
-            'django.middleware.transaction.TransactionMiddleware',
-            'django.middleware.csrf.CsrfViewMiddleware',
-            'django.middleware.locale.LocaleMiddleware',
-            'django.contrib.auth.middleware.AuthenticationMiddleware',
-            # ...
-        )
 
     INSTALLED_APPS = (
         'django.contrib.auth',
@@ -66,6 +61,41 @@ the errors logged via django's admin interface::
         'shoogie',                      # <---
         # ...
     )
+
+    # Depending on which Django version you use, and your particular set up,
+    # your LOGGING configuration may look different than this.
+    # The Shoogie-specific changes are marked.
+    # Note: The require_debug_false filter is only available in Django >= 1.4
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse',
+            },
+        },
+        'handlers': {
+            # THIS IS THE HANDLER TO ADD #
+            'shoogie': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'shoogie.log_handler.DatabaseLogHandler',
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler',
+            },
+        },
+        'loggers': {
+            'django.request': {
+                # THIS IS WHERE TO SPECIFY THE NEW SHOOGIE HANDLER #
+                'handlers': ['shoogie', 'mail_admins'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+        },
+    }
 
 Make sure to run ``syncdb`` after adding shoogie to create the
 ``shoogie_servererror`` table.

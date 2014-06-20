@@ -2,6 +2,7 @@ syntax:glob
 *.html
 *.pyc
 *.egg-info/*
+*.swp
 
 syntax:regexp
 ^dist/
