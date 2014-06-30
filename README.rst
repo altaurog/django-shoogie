@@ -65,13 +65,18 @@ the errors logged via django's admin interface::
     # Depending on which Django version you use, and your particular set up,
     # your LOGGING configuration may look different than this.
     # The Shoogie-specific changes are marked.
-    # Note: The require_debug_false filter is only available in Django >= 1.4
+    # Note: Django 1.4+ makes a require_debug_false filter available, which
+    # can be applied to shoogie. For Django 1.3 users, shoogie provides its
+    # own copy of this filter instead. Use the appropriate one as shown below.
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
         'filters': {
             'require_debug_false': {
+                # Django 1.4+ users can use the built-in filter
                 '()': 'django.utils.log.RequireDebugFalse',
+                # Django 1.3 users can use shoogie's copy instead
+                # '()': 'shoogie.log_filter.RequireDebugFalse',
             },
         },
         'handlers': {
