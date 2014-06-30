@@ -66,6 +66,8 @@ the errors logged via django's admin interface::
     # your LOGGING configuration may look different than this.
     # The Shoogie-specific changes are marked.
     # Note: The require_debug_false filter is only available in Django >= 1.4
+    # Django 1.3 doesn't log 500 Server Errors when DEBUG=True, so the filter
+    # is not needed for that version.
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
