@@ -6,4 +6,5 @@ syntax:glob
 
 syntax:regexp
 ^dist/
+^build/
 ^django-shoogie-
