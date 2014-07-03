@@ -29,7 +29,7 @@ def log_exception(request=None, exc_type=None, exc_val=None, tb=None):
     data = {}
     if request is not None:
         data = request_data(request)
-    
+
     data.update({
         'exception_type' : exc_type.__name__,
         'exception_str'  : str(exc_val),
