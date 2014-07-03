@@ -37,6 +37,8 @@ class DatabaseLogHandler(logging.Handler):
         if not self.ignores_processed:
             self.process_ignore_list()
         request = getattr(record, 'request', None)
+        if request is None:
+            request = getattr(record, 'msg', None)
         exc_type, exc_val, tb = getattr(record, 'exc_info', (None, None, None))
         if issubclass(exc_type, self.ignores):
             return
