@@ -1,8 +1,20 @@
+0.7
+---
+:date: 3 Jul, 2014
+
+* Move from middleware to a logging handler
+
+  Using a logging handler requires slightly more involved configuration,
+  but it enables shoogie to capture exceptions raised in the deferred
+  rendering of TemplateResponse objects, which is done outside the
+  exception-handling middleware.  Thanks to abbottc for the pull request.
+
+
 0.6
 ----
 :date: 5 Jun, 2014
 
-* Django 1.4 - 1.6 compatibility (thanks to abbottc for the pull request)
+* Django 1.4 - 1.6 compatibility.  Thanks to abbottc for the pull request.
 
 0.6b
 ----
