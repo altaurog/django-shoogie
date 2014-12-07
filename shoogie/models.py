@@ -1,9 +1,15 @@
 from django.db      import models
-from django.contrib.auth.models import User
 """
 Based on http://stackoverflow.com/questions/7130985/#answer-7579467
 
 """
+
+try:
+    from django.conf import settings
+    USER = settings.AUTH_USER_MODEL
+except AttributeError:
+    from django.contrib.auth.models import User
+    USER = User
 
 class ServerError(models.Model):
     timestamp       = models.DateTimeField(auto_now_add=True)
@@ -17,7 +23,7 @@ class ServerError(models.Model):
     cookie_data     = models.TextField(blank=True)
     session_id      = models.CharField(max_length=64)
     session_data    = models.TextField(blank=True)
-    user            = models.ForeignKey(User, blank=True, null=True)
+    user            = models.ForeignKey(USER, blank=True, null=True)
 
     # traceback
     exception_type  = models.CharField(max_length=128)
