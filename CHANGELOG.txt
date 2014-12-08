@@ -1,3 +1,10 @@
+0.8
+---
+:date: 8 Dec, 2014
+
+* Support custom user models for Django 1.5+.  Thanks to abbottc for the
+  pull request.
+
 0.7
 ---
 :date: 3 Jul, 2014
