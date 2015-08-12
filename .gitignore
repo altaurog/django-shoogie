@@ -1,0 +1,6 @@
+*.html
+*.pyc
+*.egg-info/
+*.swp
+/dist/
+/build/
