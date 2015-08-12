@@ -143,7 +143,8 @@ Use
 Errors logged by shoogie can be viewed via django's admin interface at
 ``/admin/shoogie/servererror/``.
 
-To view the data fields stored in the log entry, click in the first column.
+To view the data fields stored in the log entry, click the 'Exception
+type' column.
 
 To visit the url in which the error occurred, click the 'path' column.
 This won't work if the host is inaccessible, if the request method was
